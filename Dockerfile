@@ -26,8 +26,8 @@ RUN pip3 install -r requirements.txt
 # RUN git clone --recursive https://github.com/LuoweiZhou/VLP.git
 RUN git clone https://gitlab.com/khiemledev/vlp.git
 RUN bash ./vlp/setup.sh; echo "" > ./vlp/__init__.py
-ENV PYTHONPATH=/usr/vlp/pythia:/usr/vlp/pythia/pythia/legacy
+ENV PYTHONPATH=/usr/vlp:/usr/vlp/pythia:/usr/vlp/pythia/pythia/legacy
 
 EXPOSE 80
 
-CMD ["uvicorn", "app.main:app", "--workers=1", "--host", "0.0.0.0", "--port", "80", "--reload"]
+CMD ["uvicorn", "app.main:app", "--workers=1", "--host", "0.0.0.0", "--port", "80"]
