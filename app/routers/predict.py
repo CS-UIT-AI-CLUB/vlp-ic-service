@@ -112,6 +112,7 @@ def predict():
 
     with torch.no_grad():
         batch = batch_list_to_batch_tensors([input2decode])
+        batch = [t.to(device) for t in batch]
 
         input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = batch
 
