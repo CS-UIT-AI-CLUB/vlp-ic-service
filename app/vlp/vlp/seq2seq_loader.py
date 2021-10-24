@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .vlp.loader_utils import get_random_word, batch_list_to_batch_tensors, Pipeline
+from vlp.loader_utils import get_random_word, batch_list_to_batch_tensors, Pipeline
 
 import torchvision.transforms as transforms
 from PIL import Image
