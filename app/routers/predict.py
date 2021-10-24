@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
 
+from ..vlp.vlp.loader_utils import batch_list_to_batch_tensors
 from ..vlp.vlp import seq2seq_loader
 from ..vlp.pytorch_pretrained_bert.modeling import BertForSeq2SeqDecoder
 from ..vlp.pytorch_pretrained_bert.tokenization import BertTokenizer
@@ -109,9 +110,9 @@ def predict():
 
     input2decode = seq2seq4decode(region_feat_vec, region_cls_vec, region_bbox_vec)
 
-    print(input2decode)
+    batch = batch_list_to_batch_tensors([input2decode])
 
-    input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = input2decode
+    input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = batch
 
     # if args.fp16:
     #     img = img.half()
