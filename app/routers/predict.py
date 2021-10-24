@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, File
 
 from ..vlp.vlp import seq2seq_loader
 from ..vlp.pytorch_pretrained_bert.modeling import BertForSeq2SeqDecoder
@@ -6,9 +6,11 @@ from ..vlp.pytorch_pretrained_bert.tokenization import BertTokenizer
 
 import torch
 import glob
+import numpy as np
+import h5py
+import os
 
 router = APIRouter()
-
 
 class Config():
     bert_model = 'bert-base-multilingual-cased'
@@ -93,5 +95,58 @@ print('Model is now on GPU')
 
 @router.get('/predict')
 def predict():
+    base_dir = '/mlcv/Databases/Imagecaption/Dataset/vietcap4h-train-test-aug/VLP_format/region_feat_gvd_wo_bgd'
+    img_id = 'train_00000001'
+    f_feat = h5py.File(os.path.join(base_dir,\
+                        'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_feat001.h5'), 'r')
+    f_cls = h5py.File(os.path.join(base_dir,
+                        'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
+    f_bbox = h5py.File(os.path.join(base_dir,
+                                   'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
+    region_feat_vec = torch.from_numpy(f_feat[img_id][:]).float()
+    region_cls_vec = torch.from_numpy(f_cls[img_id][:]).float()
+    region_bbox_vec = torch.from_numpy(f_bbox[img_id][:])
+
+    input2decode = seq2seq4decode(region_feat_vec, region_cls_vec, region_bbox_vec)
+    input2decode = [t.to(device) for t in input2decode]
+
+    input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = input2decode
+
+    if args.fp16:
+        img = img.half()
+        vis_pe = vis_pe.half()
+
+    if args.enable_butd:
+        conv_feats = img.data # Bx100x2048
+        vis_pe = vis_pe.data
+    else:
+        conv_feats, _ = cnn(img.data) # Bx2048x7x7
+        conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
+            -1).permute(0,2,1).contiguous()
+
+    traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
+                    position_ids, input_mask, task_idx=task_idx)
+    if args.beam_size > 1:
+        traces = {k: v.tolist() for k, v in traces.items()}
+        output_ids = traces['pred_seq']
+    else:
+        output_ids = traces[0].tolist()
+    for i in range(len(buf)):
+        w_ids = output_ids[i]
+        output_buf = tokenizer.convert_ids_to_tokens(w_ids)
+        output_tokens = []
+        for t in output_buf:
+            if t in ("[SEP]", "[PAD]"):
+                break
+            output_tokens.append(t)
+        output_sequence = ' '.join(detokenize(output_tokens))
+        output_lines[buf_id[i]] = output_sequence
+
     is_ready = next(model.parameters()).is_cuda
     return {'is_ready': is_ready}
+
+
+@router.post('/predict')
+def predict(file: UploadFile = File(...)):
+
+    return {'filename': file.filename}

@@ -503,7 +503,7 @@ class Preprocess4Seq2seqPredict(Pipeline):
             self.res_Normalize = transforms.Normalize(
                 [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 
-    def __call__(self, img_arr, region_feat_vec, region_cls_vec, region_bbox_vec):
+    def __call__(self, region_feat_vec, region_cls_vec, region_bbox_vec):
         max_a_len = self.len_vis_input
         tokens_a = ['[UNK]'] * self.len_vis_input
 
@@ -544,39 +544,39 @@ class Preprocess4Seq2seqPredict(Pipeline):
         input_mask[second_st:second_end, second_st:second_end].copy_(
             self._tril_matrix[:second_end-second_st, :second_end-second_st])
 
-        if not self.enable_butd:
-            try:
-                # img = Image.open(img_path).convert('RGB')
-                img = Image.fromarray(img_arr).convert('RGB')
-                img = self.Resize(img)
-                img = self.CenterCrop(img)
-                img = self.ToTensor(img)
-                img = self.res_Normalize(img)
-            except Exception as e:
-                raise e
-                # print(
-                #     'Unable to load image {}! Loading mean image instead...'.format(img_path))
-                # img = torch.Tensor(self.res_Normalize.mean).view(-1, 1, 1).expand(
-                #     (3, self.CenterCrop.size[0], self.CenterCrop.size[1]))
-        else:
-            img = torch.from_numpy(region_feat_vec[:]).float()
-            cls_label = torch.from_numpy(
-                region_cls_vec[:]).float()
-            vis_pe = torch.from_numpy(region_bbox_vec[:])
+        # if not self.enable_butd:
+        #     try:
+        #         # img = Image.open(img_path).convert('RGB')
+        #         img = Image.fromarray(img_arr).convert('RGB')
+        #         img = self.Resize(img)
+        #         img = self.CenterCrop(img)
+        #         img = self.ToTensor(img)
+        #         img = self.res_Normalize(img)
+        #     except Exception as e:
+        #         raise e
+        #         # print(
+        #         #     'Unable to load image {}! Loading mean image instead...'.format(img_path))
+        #         # img = torch.Tensor(self.res_Normalize.mean).view(-1, 1, 1).expand(
+        #         #     (3, self.CenterCrop.size[0], self.CenterCrop.size[1]))
+        # else:
+        img = torch.from_numpy(region_feat_vec[:]).float()
+        cls_label = torch.from_numpy(
+            region_cls_vec[:]).float()
+        vis_pe = torch.from_numpy(region_bbox_vec[:])
 
-            # lazy normalization of the coordinates...
-            w_est = torch.max(vis_pe[:, [0, 2]])*1.+1e-5
-            h_est = torch.max(vis_pe[:, [1, 3]])*1.+1e-5
-            vis_pe[:, [0, 2]] /= w_est
-            vis_pe[:, [1, 3]] /= h_est
-            rel_area = (vis_pe[:, 3]-vis_pe[:, 1])*(vis_pe[:, 2]-vis_pe[:, 0])
-            rel_area.clamp_(0)
+        # lazy normalization of the coordinates...
+        w_est = torch.max(vis_pe[:, [0, 2]])*1.+1e-5
+        h_est = torch.max(vis_pe[:, [1, 3]])*1.+1e-5
+        vis_pe[:, [0, 2]] /= w_est
+        vis_pe[:, [1, 3]] /= h_est
+        rel_area = (vis_pe[:, 3]-vis_pe[:, 1])*(vis_pe[:, 2]-vis_pe[:, 0])
+        rel_area.clamp_(0)
 
-            # confident score
-            vis_pe = torch.cat(
-                (vis_pe[:, :4], rel_area.view(-1, 1), vis_pe[:, 5:]), -1)
-            normalized_coord = F.normalize(vis_pe.data[:, :5]-0.5, dim=-1)
-            vis_pe = torch.cat((F.layer_norm(vis_pe, [6]),
-                                F.layer_norm(cls_label, [1601])), dim=-1)  # 1601 hard coded...
+        # confident score
+        vis_pe = torch.cat(
+            (vis_pe[:, :4], rel_area.view(-1, 1), vis_pe[:, 5:]), -1)
+        normalized_coord = F.normalize(vis_pe.data[:, :5]-0.5, dim=-1)
+        vis_pe = torch.cat((F.layer_norm(vis_pe, [6]),
+                            F.layer_norm(cls_label, [1601])), dim=-1)  # 1601 hard coded...
 
         return (input_ids, segment_ids, position_ids, input_mask, self.task_idx, img, vis_pe)
