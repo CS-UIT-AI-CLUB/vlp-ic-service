@@ -2,7 +2,7 @@ version: '3.9'
 services:
   detectron-vlp-api:
     build:
-      - context: ./detectron_vlp_api
+      context: ./detectron_vlp_api
     networks:
       - vlp_service
 
