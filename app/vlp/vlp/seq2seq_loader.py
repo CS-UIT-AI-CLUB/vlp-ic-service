@@ -472,3 +472,111 @@ class Preprocess4Seq2seqDecoder(Pipeline):
                 F.layer_norm(cls_label, [1601])), dim=-1) # 1601 hard coded...
 
         return (input_ids, segment_ids, position_ids, input_mask, self.task_idx, img, vis_pe)
+
+
+class Preprocess4Seq2seqPredict(Pipeline):
+    """ Pre-processing steps for pretraining transformer """
+
+    def __init__(self, vocab_words, indexer, max_len=512, max_tgt_length=128, new_segment_ids=False, mode="s2s", enable_butd=False, len_vis_input=49, region_bbox_file='', region_det_file_prefix=''):
+        super().__init__()
+        self.vocab_words = vocab_words  # vocabulary (sub)words
+        self.indexer = indexer  # function from token to token index
+        self.max_len = max_len
+        self._tril_matrix = torch.tril(torch.ones(
+            (max_len, max_len), dtype=torch.long))
+        self.new_segment_ids = new_segment_ids
+        self.task_idx = 3   # relax projection layer for different tasks
+        self.mode = mode
+        if self.mode != "s2s":
+            raise ValueError("Invalid mode for seq2seq decode: %s" % self.mode)
+        self.max_tgt_length = max_tgt_length
+        self.len_vis_input = len_vis_input
+        self.region_bbox_file = region_bbox_file
+        self.region_det_file_prefix = region_det_file_prefix
+
+        # for images
+        self.enable_butd = enable_butd
+        if not enable_butd:
+            self.Resize = transforms.Resize((255, 255))
+            self.CenterCrop = transforms.CenterCrop((224, 224))
+            self.ToTensor = transforms.ToTensor()
+            self.res_Normalize = transforms.Normalize(
+                [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+
+    def __call__(self, img_arr, ):
+        max_a_len = self.len_vis_input
+        tokens_a = ['[UNK]'] * self.len_vis_input
+
+        # Add Special Tokens
+        padded_tokens_a = ['[CLS]'] + tokens_a + ['[SEP]']
+        assert len(padded_tokens_a) <= max_a_len + 2
+        if max_a_len + 2 > len(padded_tokens_a):
+            padded_tokens_a += ['[PAD]'] * \
+                (max_a_len + 2 - len(padded_tokens_a))
+        assert len(padded_tokens_a) == max_a_len + 2
+        max_len_in_batch = min(self.max_tgt_length +
+                               max_a_len + 2, self.max_len)
+        tokens = padded_tokens_a
+        if self.new_segment_ids:
+            segment_ids = [4]*(len(padded_tokens_a)) \
+                + [5]*(max_len_in_batch - len(padded_tokens_a))
+        else:
+            segment_ids = [0]*(len(padded_tokens_a)) \
+                + [1]*(max_len_in_batch - len(padded_tokens_a))
+
+        position_ids = []
+        for i in range(len(tokens_a) + 2):
+            position_ids.append(i)
+        for i in range(len(tokens_a) + 2, max_a_len + 2):
+            position_ids.append(0)
+        for i in range(max_a_len + 2, max_len_in_batch):
+            position_ids.append(i - (max_a_len + 2) + len(tokens_a) + 2)
+
+        # Token Indexing
+        input_ids = self.indexer(tokens)
+
+        # Zero Padding
+        input_mask = torch.zeros(
+            max_len_in_batch, max_len_in_batch, dtype=torch.long)
+        input_mask[:, :len(tokens_a)+2].fill_(1)
+        second_st, second_end = len(padded_tokens_a), max_len_in_batch
+
+        input_mask[second_st:second_end, second_st:second_end].copy_(
+            self._tril_matrix[:second_end-second_st, :second_end-second_st])
+
+        if not self.enable_butd:
+            try:
+                # img = Image.open(img_path).convert('RGB')
+                img = Image.fromarray(img_arr).convert('RGB')
+                img = self.Resize(img)
+                img = self.CenterCrop(img)
+                img = self.ToTensor(img)
+                img = self.res_Normalize(img)
+            except Exception as e:
+                raise e
+                # print(
+                #     'Unable to load image {}! Loading mean image instead...'.format(img_path))
+                # img = torch.Tensor(self.res_Normalize.mean).view(-1, 1, 1).expand(
+                #     (3, self.CenterCrop.size[0], self.CenterCrop.size[1]))
+        else:
+            img = torch.from_numpy(region_feat_vec[:]).float()
+            cls_label = torch.from_numpy(
+                region_cls_vec[:]).float()
+            vis_pe = torch.from_numpy(region_bbox_vec[:])
+
+            # lazy normalization of the coordinates...
+            w_est = torch.max(vis_pe[:, [0, 2]])*1.+1e-5
+            h_est = torch.max(vis_pe[:, [1, 3]])*1.+1e-5
+            vis_pe[:, [0, 2]] /= w_est
+            vis_pe[:, [1, 3]] /= h_est
+            rel_area = (vis_pe[:, 3]-vis_pe[:, 1])*(vis_pe[:, 2]-vis_pe[:, 0])
+            rel_area.clamp_(0)
+
+            # confident score
+            vis_pe = torch.cat(
+                (vis_pe[:, :4], rel_area.view(-1, 1), vis_pe[:, 5:]), -1)
+            normalized_coord = F.normalize(vis_pe.data[:, :5]-0.5, dim=-1)
+            vis_pe = torch.cat((F.layer_norm(vis_pe, [6]),
+                                F.layer_norm(cls_label, [1601])), dim=-1)  # 1601 hard coded...
+
+        return (input_ids, segment_ids, position_ids, input_mask, self.task_idx, img, vis_pe)
