@@ -65,7 +65,6 @@ if args.forbid_ignore_word:
             w_list.append(w)
     forbid_ignore_set = set(tokenizer.convert_tokens_to_ids(w_list))
 
-print(args.model_recover_path)
 for model_recover_path in glob.glob(args.model_recover_path.strip()):
     model_recover = torch.load(model_recover_path)
     model = BertForSeq2SeqDecoder.from_pretrained(args.bert_model,
@@ -80,11 +79,13 @@ for model_recover_path in glob.glob(args.model_recover_path.strip()):
 
 if args.fp16:
     model.half()
-    model.to(device)
-    if n_gpu > 1:
-        model = torch.nn.DataParallel(model)
+model.to(device)
+if n_gpu > 1:
+    model = torch.nn.DataParallel(model)
+torch.cuda.empty_cache()
+model.eval()
 
 @router.get('/predict')
 def predict():
-
-    return {'message': args.model_recover_path}
+    is_ready = next(model.parameters()).is_cuda
+    return {'is_ready': is_ready}
