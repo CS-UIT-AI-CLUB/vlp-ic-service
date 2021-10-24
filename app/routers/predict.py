@@ -115,19 +115,26 @@ print('Model is now on GPU')
 
 @router.get('/predict')
 def predict():
+    is_ready = next(model.parameters()).is_cuda
+    return {'is_ready': is_ready}
+
+
+@router.post('/predict')
+def predict(file: UploadFile = File(...)):
     base_dir = '/mlcv/Databases/Imagecaption/Dataset/vietcap4h-train-test-aug/VLP_format/region_feat_gvd_wo_bgd'
     img_id = 'train_00000001'
-    f_feat = h5py.File(os.path.join(base_dir,\
-                        'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_feat001.h5'), 'r')
+    f_feat = h5py.File(os.path.join(base_dir,
+                                    'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_feat001.h5'), 'r')
     f_cls = h5py.File(os.path.join(base_dir,
-                        'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
+                                'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
     f_bbox = h5py.File(os.path.join(base_dir,
-                                   'raw_bbox/coco_detection_vg_100dets_vlp_checkpoint_trainval_bbox001.h5'), 'r')
+                                    'raw_bbox/coco_detection_vg_100dets_vlp_checkpoint_trainval_bbox001.h5'), 'r')
     region_feat_vec = np.array(f_feat[img_id])
     region_cls_vec = np.array(f_cls[img_id])
     region_bbox_vec = np.array(f_bbox[img_id])
 
-    input2decode = seq2seq4decode(region_feat_vec, region_cls_vec, region_bbox_vec)
+    input2decode = seq2seq4decode(
+       region_feat_vec, region_cls_vec, region_bbox_vec)
 
     with torch.no_grad():
         batch = batch_list_to_batch_tensors([input2decode])
@@ -140,15 +147,15 @@ def predict():
             vis_pe = vis_pe.half()
 
         if args.enable_butd:
-            conv_feats = img.data # Bx100x2048
+            conv_feats = img.data  # Bx100x2048
             vis_pe = vis_pe.data
         else:
-            conv_feats, _ = cnn(img.data) # Bx2048x7x7
+            conv_feats, _ = cnn(img.data)  # Bx2048x7x7
             conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
-                -1).permute(0,2,1).contiguous()
+                                         -1).permute(0, 2, 1).contiguous()
 
         traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
-                        position_ids, input_mask, task_idx=task_idx)
+                       position_ids, input_mask, task_idx=task_idx)
         if args.beam_size > 1:
             traces = {k: v.tolist() for k, v in traces.items()}
             output_ids = traces['pred_seq']
@@ -163,7 +170,7 @@ def predict():
                 break
             output_tokens.append(t)
         output_sequence = post_process(' '.join(detokenize(output_tokens)))
-        
+
     return {
         'code': 1000,
         'status': 'Done',
@@ -171,9 +178,3 @@ def predict():
             'caption': output_sequence
         }
     }
-
-
-@router.post('/predict')
-def predict(file: UploadFile = File(...)):
-
-    return {'filename': file.filename}
