@@ -4,6 +4,9 @@ FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 ### SET TIMEZONE
 ENV TZ=Asia/Ho_Chi_Minh
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONIOENCODING=UTF-8
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 RUN ln -fs /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
 
 
