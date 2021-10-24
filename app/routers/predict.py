@@ -103,9 +103,9 @@ def predict():
                         'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
     f_bbox = h5py.File(os.path.join(base_dir,
                                    'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
-    region_feat_vec = torch.from_numpy(f_feat[img_id][:]).float()
-    region_cls_vec = torch.from_numpy(f_cls[img_id][:]).float()
-    region_bbox_vec = torch.from_numpy(f_bbox[img_id][:])
+    region_feat_vec = np.array(f_feat[img_id][:])
+    region_cls_vec = np.array(f_cls[img_id][:])
+    region_bbox_vec = np.array(f_bbox[img_id][:])
 
     input2decode = seq2seq4decode(region_feat_vec, region_cls_vec, region_bbox_vec)
     input2decode = [t.to(device) for t in input2decode]
