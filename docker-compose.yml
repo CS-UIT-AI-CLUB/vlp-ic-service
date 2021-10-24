@@ -5,6 +5,13 @@ services:
       context: ./detectron_vlp_api
     networks:
       - vlp_service
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
 
   vlp-ic-api:
     build: .
