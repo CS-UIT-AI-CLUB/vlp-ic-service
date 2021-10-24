@@ -503,7 +503,7 @@ class Preprocess4Seq2seqPredict(Pipeline):
             self.res_Normalize = transforms.Normalize(
                 [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 
-    def __call__(self, img_arr, ):
+    def __call__(self, img_arr, region_feat_vec, region_cls_vec, region_bbox_vec):
         max_a_len = self.len_vis_input
         tokens_a = ['[UNK]'] * self.len_vis_input
 
