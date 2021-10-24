@@ -25,7 +25,7 @@ RUN pip3 install -r requirements.txt
 
 # RUN git clone --recursive https://github.com/LuoweiZhou/VLP.git
 RUN git clone https://gitlab.com/khiemledev/vlp.git
-RUN bash VLP/setup.sh
+RUN bash ./vlp/setup.sh
 ENV PYTHONPATH=/usr/VLP/pythia:/usr/VLP/pythia/pythia/legacy
 
 EXPOSE 80
