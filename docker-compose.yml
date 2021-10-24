@@ -1,5 +1,10 @@
 version: '3.9'
 services:
+  detectron-vlp-api:
+    build:
+      - context: ./detectron_vlp_api
+    network: vlp_network
+
   vlp-ic-api:
     build: .
     ports:
@@ -7,6 +12,7 @@ services:
     volumes:
       - ./app:/usr/src/app
       - /mlcv:/mlcv
+    network: vlp_service
     deploy:
       resources:
         reservations:
@@ -14,3 +20,6 @@ services:
             - driver: nvidia
               device_ids: ['1']
               capabilities: [gpu]
+
+networks:
+  vlp_service:
