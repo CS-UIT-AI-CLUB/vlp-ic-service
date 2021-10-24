@@ -1,9 +1,5 @@
-import sys
-import os
-
 from fastapi import FastAPI
 from .routers import check_cuda, predict
-from .vlp.vlp import seq2seq_loader
 
 app = FastAPI()
 
