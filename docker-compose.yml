@@ -10,4 +10,6 @@ services:
       resources:
         reservations:
           devices:
-            - capabilities: [gpu]
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
