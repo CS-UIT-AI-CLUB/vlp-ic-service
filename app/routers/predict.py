@@ -27,7 +27,7 @@ class Config():
     min_len = None
     region_bbox_file = ''
     region_det_file_prefix = ''
-
+    fp16 = False
     
 
 args = Config()
@@ -77,6 +77,12 @@ for model_recover_path in glob.glob(args.model_recover_path.strip()):
                                                   forbid_ignore_set=forbid_ignore_set, ngram_size=args.ngram_size, min_len=args.min_len,
                                                   enable_butd=args.enable_butd, len_vis_input=args.len_vis_input)
     del model_recover
+
+if args.fp16:
+    model.half()
+    model.to(device)
+    if n_gpu > 1:
+        model = torch.nn.DataParallel(model)
 
 @router.get('/predict')
 def predict():
