@@ -24,7 +24,7 @@ RUN pip3 install fastapi uvicorn[standard]
 RUN pip3 install -r requirements.txt
 
 RUN git clone --recursive https://github.com/LuoweiZhou/VLP.git
-RUN cd VLP; ./setup.sh
+RUN bash VLP/setup.sh
 ENV PYTHONPATH=/usr/VLP/pythia:/usr/VLP/pythia/pythia/legacy
 
 EXPOSE 80
