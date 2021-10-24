@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join('../vlp', 'vlp')))
+
 from fastapi import FastAPI
 from .routers import check_cuda, predict
 from vlp.vlp.pytorch_pretrained_bert.modeling import BertForSeq2SeqDecoder
