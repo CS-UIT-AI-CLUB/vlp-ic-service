@@ -25,6 +25,9 @@ class Config():
     forbid_ignore_word = None
     ngram_size = 3
     min_len = None
+    region_bbox_file = ''
+    region_det_file_prefix = ''
+
     
 
 args = Config()
