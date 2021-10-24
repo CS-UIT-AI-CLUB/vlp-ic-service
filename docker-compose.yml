@@ -6,6 +6,7 @@ services:
       - "8082:80"
     volumes:
       - ./app:/usr/src/app
+      - /mlcv:/mlcv
     deploy:
       resources:
         reservations:
