@@ -13,6 +13,16 @@ import os
 
 router = APIRouter()
 
+
+def detokenize(tk_list):
+    r_list = []
+    for tk in tk_list:
+        if tk.startswith('##') and len(r_list) > 0:
+            r_list[-1] = r_list[-1] + tk[2:]
+        else:
+            r_list.append(tk)
+    return r_list
+
 class Config():
     bert_model = 'bert-base-multilingual-cased'
     do_lower_case = False
@@ -130,22 +140,21 @@ def predict():
 
         traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
                         position_ids, input_mask, task_idx=task_idx)
-        print(traces.items())
-        # if args.beam_size > 1:
-        #     traces = {k: v.tolist() for k, v in traces.items()}
-        #     output_ids = traces['pred_seq']
-        # else:
-        #     output_ids = traces[0].tolist()
+        if args.beam_size > 1:
+            traces = {k: v.tolist() for k, v in traces.items()}
+            output_ids = traces['pred_seq']
+        else:
+            output_ids = traces[0].tolist()
         # for i in range(len(buf)):
-        #     w_ids = output_ids[i]
-        #     output_buf = tokenizer.convert_ids_to_tokens(w_ids)
-        #     output_tokens = []
-        #     for t in output_buf:
-        #         if t in ("[SEP]", "[PAD]"):
-        #             break
-        #         output_tokens.append(t)
-        #     output_sequence = ' '.join(detokenize(output_tokens))
-        #     output_lines[buf_id[i]] = output_sequence
+        w_ids = output_ids[0]
+        output_buf = tokenizer.convert_ids_to_tokens(w_ids)
+        output_tokens = []
+        for t in output_buf:
+            if t in ("[SEP]", "[PAD]"):
+                break
+            output_tokens.append(t)
+        output_sequence = ' '.join(detokenize(output_tokens))
+        print(output_sequence)
 
     is_ready = next(model.parameters()).is_cuda
     return {'is_ready': is_ready}
