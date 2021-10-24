@@ -12,7 +12,7 @@ pwd
 
 echo "----------------- Start Installing -----------------"
 PWD_DIR=$(pwd)
-cd $(mktemp -d)
+# cd $(mktemp -d)
 
 echo "----------------- Install NCCL -----------------"
 apt -y update
