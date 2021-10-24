@@ -17,9 +17,8 @@ WORKDIR /usr
 
 COPY ./ /usr
 
-RUN pip install fastapi uvicorn[standard]
-
-RUN pip install -r requirements.txt
+RUN pip3 install fastapi uvicorn[standard]
+RUN pip3 install -r requirements.txt
 
 EXPOSE 80
 
