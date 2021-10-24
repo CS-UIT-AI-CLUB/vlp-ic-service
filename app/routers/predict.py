@@ -102,7 +102,7 @@ def predict():
     f_cls = h5py.File(os.path.join(base_dir,
                         'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
     f_bbox = h5py.File(os.path.join(base_dir,
-                                   'feat_cls_1000/coco_detection_vg_100dets_vlp_checkpoint_trainval_cls001.h5'), 'r')
+                                   'raw_bbox/coco_detection_vg_100dets_vlp_checkpoint_trainval_bbox001.h5'), 'r')
     region_feat_vec = np.array(f_feat[img_id])
     region_cls_vec = np.array(f_cls[img_id])
     region_bbox_vec = np.array(f_bbox[img_id])
