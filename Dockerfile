@@ -16,15 +16,17 @@ RUN apt-get install -y software-properties-common
 RUN apt-get install -y libgl1-mesa-glx libegl1-mesa libxrandr2 libxrandr2 libxss1 libxcursor1 libxcomposite1 libasound2 libxi6 libxtst6
 RUN apt-get install -y python3 python3-pip git
 
-WORKDIR /usr/src
 
-COPY ./ /usr/src
+ARG WORK_DIR=/usr/src
+WORKDIR ${WORK_DIR}
+
+COPY ./ ${WORK_DIR}
 
 RUN pip3 install fastapi uvicorn[standard]
 RUN pip3 install -r requirements.txt
 
-RUN bash /usr/src/app/vlp/setup.sh;
-ENV PYTHONPATH=/usr/src/app/vlp:/usr/src/app/vlp/pythia:/usr/src/app/vlp/pythia/pythia/legacy
+RUN bash ${WORK_DIR}/app/vlp/setup.sh;
+ENV PYTHONPATH=${WORK_DIR}/app/vlp:/${WORK_DIR}/app/vlp/pythia:${WORK_DIR}/app/vlp/pythia/pythia/legacy:${WORK_DIR}/apex
 
 EXPOSE 80
 
