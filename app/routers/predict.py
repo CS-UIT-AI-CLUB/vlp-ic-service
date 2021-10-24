@@ -55,7 +55,7 @@ type_vocab_size = 6 if args.new_segment_ids else 2
 mask_word_id, eos_word_ids = tokenizer.convert_tokens_to_ids(
     ["[MASK]", "[SEP]"])
 
-forbid_ignore_word = None
+forbid_ignore_set = None
 if args.forbid_ignore_word:
     w_list = []
     for w in args.forbid_ignore_word.split('|'):
