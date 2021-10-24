@@ -14,6 +14,15 @@ import os
 router = APIRouter()
 
 
+def post_process(cap):
+    if cap.endswith(' .'):
+        cap = cap[:-2] + '.'
+    cap = cap.replace('X - quang', 'X-quang')
+    cap = cap.replace('x - quang', 'x-quang')
+    cap = cap.replace(' ,', ',')
+    cap = cap.replace(' :', ':')
+    return cap
+
 def detokenize(tk_list):
     r_list = []
     for tk in tk_list:
@@ -153,11 +162,15 @@ def predict():
             if t in ("[SEP]", "[PAD]"):
                 break
             output_tokens.append(t)
-        output_sequence = ' '.join(detokenize(output_tokens))
-        print(output_sequence)
-
-    is_ready = next(model.parameters()).is_cuda
-    return {'is_ready': is_ready}
+        output_sequence = post_process(' '.join(detokenize(output_tokens)))
+        
+    return {
+        'code': 1000,
+        'status': 'Done',
+        'data': {
+            'caption': output_sequence
+        }
+    }
 
 
 @router.post('/predict')
