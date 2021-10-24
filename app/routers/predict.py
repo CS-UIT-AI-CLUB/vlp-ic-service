@@ -65,6 +65,7 @@ if args.forbid_ignore_word:
             w_list.append(w)
     forbid_ignore_set = set(tokenizer.convert_tokens_to_ids(w_list))
 
+print('Load model...')
 for model_recover_path in glob.glob(args.model_recover_path.strip()):
     model_recover = torch.load(model_recover_path)
     model = BertForSeq2SeqDecoder.from_pretrained(args.bert_model,
@@ -76,7 +77,9 @@ for model_recover_path in glob.glob(args.model_recover_path.strip()):
                                                   forbid_ignore_set=forbid_ignore_set, ngram_size=args.ngram_size, min_len=args.min_len,
                                                   enable_butd=args.enable_butd, len_vis_input=args.len_vis_input)
     del model_recover
+print('Model loaded')
 
+print('Load model to GPU')
 if args.fp16:
     model.half()
 model.to(device)
@@ -84,6 +87,7 @@ if n_gpu > 1:
     model = torch.nn.DataParallel(model)
 torch.cuda.empty_cache()
 model.eval()
+print('Model is now on GPU')
 
 @router.get('/predict')
 def predict():
