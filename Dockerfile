@@ -24,7 +24,7 @@ RUN pip3 install fastapi uvicorn[standard]
 RUN pip3 install -r requirements.txt
 
 RUN bash /usr/app/vlp/setup.sh;
-ENV PYTHONPATH=/usr/vlp:/usr/vlp/vlp:/usr/vlp/pytorch_pretrained_bert:/usr/vlp/pythia:/usr/vlp/pythia/pythia/legacy
+ENV PYTHONPATH=/usr/app/vlp:/usr/app/vlp/pythia:/usr/app/vlp/pythia/pythia/legacy
 
 EXPOSE 80
 
