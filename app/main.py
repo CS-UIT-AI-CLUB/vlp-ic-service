@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join('./vlp', 'vlp')))
+sys.path.append(os.path.abspath(os.path.join('..', 'vlp')))
 
 from fastapi import FastAPI
 from .routers import check_cuda, predict
