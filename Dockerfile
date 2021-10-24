@@ -30,4 +30,4 @@ ENV PYTHONPATH=${WORK_DIR}/app/vlp:/${WORK_DIR}/app/vlp/pythia:${WORK_DIR}/app/v
 
 EXPOSE 80
 
-CMD ["uvicorn", "app.main:app", "--workers=1", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app.main:app", "--workers=1", "--host", "0.0.0.0", "--port", "80", "--reload"]
