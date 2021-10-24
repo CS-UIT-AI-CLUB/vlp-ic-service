@@ -172,7 +172,7 @@ def predict(file: UploadFile = File(...)):
         output_sequence = post_process(' '.join(detokenize(output_tokens)))
 
     return {
-        'code': 1000,
+        'code': '1000',
         'status': 'Done',
         'data': {
             'caption': output_sequence
