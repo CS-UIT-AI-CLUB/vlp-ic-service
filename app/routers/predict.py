@@ -108,7 +108,8 @@ def predict():
     region_bbox_vec = np.array(f_bbox[img_id])
 
     input2decode = seq2seq4decode(region_feat_vec, region_cls_vec, region_bbox_vec)
-    input2decode = [t.to(device) for t in input2decode]
+
+    print(input2decode)
 
     input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = input2decode
 
