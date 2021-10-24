@@ -114,17 +114,17 @@ def predict():
 
     input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = batch
 
-    # if args.fp16:
-    #     img = img.half()
-    #     vis_pe = vis_pe.half()
+    if args.fp16:
+        img = img.half()
+        vis_pe = vis_pe.half()
 
-    # if args.enable_butd:
-    #     conv_feats = img.data # Bx100x2048
-    #     vis_pe = vis_pe.data
-    # else:
-    #     conv_feats, _ = cnn(img.data) # Bx2048x7x7
-    #     conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
-    #         -1).permute(0,2,1).contiguous()
+    if args.enable_butd:
+        conv_feats = img.data # Bx100x2048
+        vis_pe = vis_pe.data
+    else:
+        conv_feats, _ = cnn(img.data) # Bx2048x7x7
+        conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
+            -1).permute(0,2,1).contiguous()
 
     # traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
     #                 position_ids, input_mask, task_idx=task_idx)
