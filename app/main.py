@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import check_cuda
+from .routers import check_cuda
 
 app = FastAPI()
 
