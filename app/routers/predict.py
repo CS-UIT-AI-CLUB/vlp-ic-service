@@ -68,8 +68,8 @@ def predict():
         forbid_ignore_set = set(tokenizer.convert_tokens_to_ids(w_list))
 
     # print('Load model...')
-    # for model_recover_path in glob.glob(args.model_recover_path.strip()):
-    #     model_recover = torch.load(model_recover_path)
+    for model_recover_path in glob.glob(args.model_recover_path.strip()):
+        model_recover = torch.load(model_recover_path)
     #     model = BertForSeq2SeqDecoder.from_pretrained(args.bert_model,
     #                                                 max_position_embeddings=args.max_position_embeddings, config_path=args.config_path,
     #                                                 state_dict=model_recover, num_labels=cls_num_labels,
