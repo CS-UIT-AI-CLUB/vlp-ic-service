@@ -1,3 +1,10 @@
+from ..vlp.vlp import seq2seq_loader
+from ..vlp.pytorch_pretrained_bert.modeling import BertForSeq2SeqDecoder
+from ..vlp.pytorch_pretrained_bert.tokenization import BertTokenizer
+
+import torch
+import glob
+
 class Config():
     bert_model = 'bert-base-multilingual-cased'
     do_lower_case = False
