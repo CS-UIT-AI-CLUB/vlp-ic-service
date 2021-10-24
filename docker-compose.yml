@@ -3,7 +3,8 @@ services:
   detectron-vlp-api:
     build:
       - context: ./detectron_vlp_api
-    network: vlp_network
+    networks:
+      - vlp_service
 
   vlp-ic-api:
     build: .
@@ -12,7 +13,8 @@ services:
     volumes:
       - ./app:/usr/src/app
       - /mlcv:/mlcv
-    network: vlp_service
+    networks:
+      - vlp_service
     deploy:
       resources:
         reservations:
