@@ -105,7 +105,7 @@ class serviceDetectronVLPHandler(Resource):
 		args = parser.parse_args()
 
 		try:
-			print(args)
+			return args, 200
 			image_filename = args['image'].filename
 			print(image_filename)
 			if allowed_file(image_filename):
@@ -128,9 +128,7 @@ class serviceDetectronVLPHandler(Resource):
 				return {'message': 'Successfully', 'result': json.dumps(results_dict, cls=NumpyEncoder)}, 200
 			else:
 				return {'message': 'Not in allowed file'}, 420
-		except Exception as e:
-			print(str(e))
-			print(traceback.format_exc())
+		except:
 			return {'message': 'No file selected'}, 419
 		
 

@@ -148,7 +148,7 @@ def predict(file: UploadFile = File(...)):
             'status': 'Cannot decode JSON response'
         }
 
-    print(result['message'])
+    print(result)
 
     # input2decode = seq2seq4decode(
     #    region_feat_vec, region_cls_vec, region_bbox_vec)
