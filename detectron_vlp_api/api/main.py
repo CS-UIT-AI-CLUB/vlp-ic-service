@@ -29,6 +29,7 @@ import timeit
 import json
 import h5py
 import itertools
+import traceback
 
 
 from utils.io import cache_url
@@ -126,7 +127,9 @@ class serviceDetectronVLPHandler(Resource):
 				return {'message': 'Successfully', 'result': json.dumps(results_dict, cls=NumpyEncoder)}, 200
 			else:
 				return {'message': 'Not in allowed file'}, 420
-		except:
+		except Exception as e:
+			print(str(e))
+			print(traceback.format_exc())
 			return {'message': 'No file selected'}, 419
 		
 
