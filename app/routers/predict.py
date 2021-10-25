@@ -45,7 +45,7 @@ class Config():
     max_position_embeddings = 512
     config_path = None
     model_recover_path = 'app/vlp/checkpoints/model.bin'
-    beam_size = 5
+    beam_size = 3
     length_penalty = 0
     forbid_duplicate_ngrams = None
     forbid_ignore_word = None
