@@ -157,9 +157,9 @@ def predict(file: UploadFile = File(...)):
             'status': 'Cannot decode JSON response'
         }
 
-    region_feat_vec = np.array(result['result']['region_feat'])
-    region_cls_vec = np.array(result['result']['cls_prob'])
-    region_bbox_vec = np.array(result['result']['proposals'])
+    region_feat_vec = np.array(result['result']['region_feat'], dtype=np.float32)
+    region_cls_vec = np.array(result['result']['cls_prob'], dtype=np.float32)
+    region_bbox_vec = np.array(result['result']['proposals'], dtype=np.float32)
     print(region_feat_vec.shape)
     print(region_cls_vec.shape)
     print(region_bbox_vec.shape)
