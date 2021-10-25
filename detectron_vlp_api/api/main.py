@@ -130,6 +130,7 @@ class serviceDetectronVLPHandler(Resource):
 			else:
 				return {'message': 'Not in allowed file'}, 420
 		except:
+			logger.info(traceback.format_exc())
 			return {'message': 'No file selected'}, 419
 		
 
