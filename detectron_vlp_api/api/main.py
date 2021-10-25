@@ -76,7 +76,8 @@ FEATURE_NAME = cfg_service.SERVICE.FEATURE_NAME
 ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'bmp'])
 
 def allowed_file(filename):
-    	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+	return True
+    #return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Load model
 logger = logging.getLogger(__name__)
