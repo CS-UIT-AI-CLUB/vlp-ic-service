@@ -104,7 +104,7 @@ class serviceDetectronVLPHandler(Resource):
 		parser.add_argument('image', type=werkzeug.datastructures.FileStorage, location='files') 
 
 		args = parser.parse_args()
-		return args, 200
+		return list(args.keys()), 200
 
 		try:
 			image_filename = args['image'].filename
