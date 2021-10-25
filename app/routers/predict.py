@@ -136,7 +136,7 @@ def predict(file: UploadFile = File(...)):
     # region_bbox_vec = np.array(f_bbox[img_id])
 
     print(file.filename)
-    f = {'image': file.file.read()}
+    f = {'image': file.file}
     result = requests.post(
         'http://detectron-vlp-api:5055/api/detectron_vlp', files=f)
     try:
