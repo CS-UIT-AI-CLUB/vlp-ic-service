@@ -105,7 +105,6 @@ class serviceDetectronVLPHandler(Resource):
 		args = parser.parse_args()
 
 		try:
-			return args, 200
 			image_filename = args['image'].filename
 			print(image_filename)
 			if allowed_file(image_filename):
