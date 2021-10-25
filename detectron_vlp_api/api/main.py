@@ -120,11 +120,12 @@ class serviceDetectronVLPHandler(Resource):
 				proposals = np.concatenate((result['boxes'], np.expand_dims(result['object'], axis=1)
 											.astype(np.float32), np.expand_dims(result['obj_prob'], axis=1)), axis=1)
 				results_dict = {}
-				results_dict['proposals'] = proposals.astype(DATA_TYPE)
-				results_dict['region_feat'] = result['region_feat'].squeeze().astype(DATA_TYPE)
-				results_dict['cls_prob'] = result['cls_prob'].astype(DATA_TYPE)
+				results_dict['proposals'] = str(proposals.astype(DATA_TYPE))
+				results_dict['region_feat'] = str(
+					result['region_feat'].squeeze().astype(DATA_TYPE))
+				results_dict['cls_prob'] = str(result['cls_prob'].astype(DATA_TYPE))
 
-				return {'message': 'Successfully', 'result': json.dumps(results_dict, cls=NumpyEncoder)}, 200
+				return {'message': 'Successfully', 'result': json.dumps(results_dict)}, 200
 			else:
 				return {'message': 'Not in allowed file'}, 420
 		except:
