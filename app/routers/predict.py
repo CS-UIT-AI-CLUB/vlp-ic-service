@@ -138,8 +138,7 @@ def predict(file: UploadFile = File(...)):
     print(file.filename)
     f = {'image': file.file.read()}
     result = requests.post(
-        'http://detectron-vlp-api:5055/api/detectron_vlp',
-        files=f, headers={'Content-Type': 'multipart/form-data'})
+        'http://detectron-vlp-api:5055/api/detectron_vlp', files=f)
     try:
         result = result.json()
     except json.JSONDecodeError:
