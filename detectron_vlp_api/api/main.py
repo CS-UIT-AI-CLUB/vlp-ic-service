@@ -109,7 +109,8 @@ class serviceDetectronVLPHandler(Resource):
 			image_filename = args['image'].filename
 			if allowed_file(image_filename):
 				image_file = args['image'].read()
-				npimg = np.fromstring(image_file, np.uint8)
+				# npimg = np.fromstring(image_file, np.uint8)
+				npimg = np.frombuffer(image_file, np.uint8)
 				img = cv2.imdecode(npimg, cv2.IMREAD_UNCHANGED)
 				cv2.imwrite(os.path.join(basedir, app.config['UPLOAD_FOLDER'], image_filename), img)
 
