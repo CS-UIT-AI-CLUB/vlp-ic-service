@@ -129,8 +129,8 @@ class serviceDetectronVLPHandler(Resource):
 				return {'message': 'Successfully', 'result': results_dict}, 200
 			else:
 				return {'message': 'Not in allowed file'}, 420
-		except:
-			return {'message': 'Error'}, 500
+		except Exception as e:
+			return {'message': str(e)}, 500
 			# return {'message': 'No file selected'}, 419
 		
 
