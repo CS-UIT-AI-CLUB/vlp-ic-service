@@ -141,8 +141,8 @@ def predict(file: UploadFile = File(...)):
     headers = {
         'Content-Type': 'multipart/form-data'
     }
-    f = {'image': BytesIO(file.file.read())}
-    result = requests.post(url, headers=headers, files=f)
+    f = {'image': file.file.read()}
+    result = requests.post(url, files=f)
     try:
         result = result.json()
     except json.JSONDecodeError:
