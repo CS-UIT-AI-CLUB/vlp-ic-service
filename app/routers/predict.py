@@ -11,6 +11,7 @@ import glob
 import numpy as np
 import h5py
 import os
+from io import BytesIO
 import requests
 
 router = APIRouter()
@@ -140,7 +141,7 @@ def predict(file: UploadFile = File(...)):
     headers = {
         'Content-Type': 'multipart/form-data'
     }
-    f = {'image': file.file}
+    f = {'image': BytesIO(file.file.read())}
     result = requests.post(url, headers=headers, files=f)
     try:
         result = result.json()
