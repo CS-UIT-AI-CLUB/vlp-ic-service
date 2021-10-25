@@ -160,9 +160,6 @@ def predict(file: UploadFile = File(...)):
     region_feat_vec = np.array(result['result']['region_feat'], dtype=np.float32)
     region_cls_vec = np.array(result['result']['cls_prob'], dtype=np.float32)
     region_bbox_vec = np.array(result['result']['proposals'], dtype=np.float32)
-    print(region_feat_vec.shape)
-    print(region_cls_vec.shape)
-    print(region_bbox_vec.shape)
 
     input2decode = seq2seq4decode(
        region_feat_vec, region_cls_vec, region_bbox_vec)
