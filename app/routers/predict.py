@@ -105,15 +105,15 @@ for model_recover_path in glob.glob(args.model_recover_path.strip()):
     del model_recover
 print('Model loaded')
 
-# print('Load model to GPU')
-# if args.fp16:
-#     model.half()
-# model.to(device)
-# if n_gpu > 1:
-#     model = torch.nn.DataParallel(model)
-# torch.cuda.empty_cache()
-# model.eval()
-# print('Model is now on GPU')
+print('Load model to GPU')
+if args.fp16:
+    model.half()
+model.to(device)
+if n_gpu > 1:
+    model = torch.nn.DataParallel(model)
+torch.cuda.empty_cache()
+model.eval()
+print('Model is now on GPU')
     
 
 @router.get('/predict')
