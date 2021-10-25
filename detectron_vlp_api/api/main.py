@@ -106,7 +106,7 @@ class serviceDetectronVLPHandler(Resource):
 
 		args = parser.parse_args()
 		# return str(args['image']), 200
-		return request.files.getlist('image'), 200
+		return str(request.files.getlist('image')), 200
 
 		try:
 			image_filename = args['image'].filename
