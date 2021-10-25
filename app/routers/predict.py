@@ -143,6 +143,12 @@ def predict(file: UploadFile = File(...)):
     # }
     f = {'image': (file.filename, file.file.read(), file.content_type)}
     result = requests.post(url, files=f)
+    if result.status_code != 200:
+        return {
+            'code': 1001,
+            'status': 'Server got an unexpected error'
+        }
+
     try:
         result = result.json()
     except json.JSONDecodeError:
@@ -151,7 +157,12 @@ def predict(file: UploadFile = File(...)):
             'status': 'Cannot decode JSON response'
         }
 
-    print(result)
+    region_feat_vec = np.array(result['result']['region_feat'])
+    region_cls_vec = np.array(result['result']['region_cls'])
+    region_bbox_vec = np.array(result['result']['proposals'])
+    print(region_feat_vec.shape)
+    print(region_cls_vec.shape)
+    print(region_bbox_vec.shape)
 
     # input2decode = seq2seq4decode(
     #    region_feat_vec, region_cls_vec, region_bbox_vec)
