@@ -108,6 +108,7 @@ class serviceDetectronVLPHandler(Resource):
 		try:
 			image_filename = args['image'].filename
 			print(image_filename)
+			return image_filename, 200
 			if allowed_file(image_filename):
 				image_file = args['image'].read()
 				npimg = np.fromstring(image_file, np.uint8)
