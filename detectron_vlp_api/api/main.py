@@ -51,6 +51,7 @@ csv.field_size_limit(sys.maxsize)
 
 from app import api, app, basedir
 from flask_restful import Resource, reqparse
+from flask import request
 import werkzeug
 
 import os
@@ -100,15 +101,15 @@ class NumpyEncoder(json.JSONEncoder):
 # Service class
 class serviceDetectronVLPHandler(Resource):
 	def post(self):
-		parser = reqparse.RequestParser()
-		parser.add_argument('image', type=werkzeug.datastructures.FileStorage, location='files') 
+		# parser = reqparse.RequestParser()
+		# parser.add_argument('image', type=werkzeug.datastructures.FileStorage, location='files') 
 
-		args = parser.parse_args()
+		# args = parser.parse_args()
 
 		try:
-			image_filename = args['image'].filename
-			print(image_filename)
-			return image_filename, 200
+			# image_filename = args['image'].filename
+
+			return request, 200
 			if allowed_file(image_filename):
 				image_file = args['image'].read()
 				npimg = np.fromstring(image_file, np.uint8)
