@@ -138,10 +138,10 @@ def predict(file: UploadFile = File(...)):
 
     print(file.filename)
     url = 'http://detectron-vlp-api:5055/api/detectron_vlp'
-    headers = {
-        'Content-Type': 'multipart/form-data'
-    }
-    f = {'image': file.file.read()}
+    # headers = {
+    #     'Content-Type': 'multipart/form-data'
+    # }
+    f = {'image': (file.filename, file.file.read(), file.content_type)}
     result = requests.post(url, files=f)
     try:
         result = result.json()
