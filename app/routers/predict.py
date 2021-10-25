@@ -136,9 +136,12 @@ def predict(file: UploadFile = File(...)):
     # region_bbox_vec = np.array(f_bbox[img_id])
 
     print(file.filename)
+    url = 'http://detectron-vlp-api:5055/api/detectron_vlp'
+    headers = {
+        'Content-Type': 'multipart/form-data'
+    }
     f = {'image': file.file}
-    result = requests.post(
-        'http://detectron-vlp-api:5055/api/detectron_vlp', files=f)
+    result = requests.post( url, headers=headers, files=f)
     try:
         result = result.json()
     except json.JSONDecodeError:
