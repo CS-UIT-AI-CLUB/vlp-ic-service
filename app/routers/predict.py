@@ -140,8 +140,8 @@ def predict(file: UploadFile = File(...)):
     headers = {
         'Content-Type': 'multipart/form-data'
     }
-    f = {'image': file.file}
-    result = requests.post( url, headers=headers, files=f)
+    f = {'image': file}
+    result = requests.post(url, headers=headers, files=f)
     try:
         result = result.json()
     except json.JSONDecodeError:
