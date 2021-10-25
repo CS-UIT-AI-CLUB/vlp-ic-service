@@ -164,48 +164,48 @@ def predict(file: UploadFile = File(...)):
     print(region_cls_vec.shape)
     print(region_bbox_vec.shape)
 
-    # input2decode = seq2seq4decode(
-    #    region_feat_vec, region_cls_vec, region_bbox_vec)
+    input2decode = seq2seq4decode(
+       region_feat_vec, region_cls_vec, region_bbox_vec)
 
-    # with torch.no_grad():
-    #     batch = batch_list_to_batch_tensors([input2decode])
-    #     batch = [t.to(device) for t in batch]
+    with torch.no_grad():
+        batch = batch_list_to_batch_tensors([input2decode])
+        batch = [t.to(device) for t in batch]
 
-    #     input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = batch
+        input_ids, token_type_ids, position_ids, input_mask, task_idx, img, vis_pe = batch
 
-    #     if args.fp16:
-    #         img = img.half()
-    #         vis_pe = vis_pe.half()
+        if args.fp16:
+            img = img.half()
+            vis_pe = vis_pe.half()
 
-    #     if args.enable_butd:
-    #         conv_feats = img.data  # Bx100x2048
-    #         vis_pe = vis_pe.data
-    #     else:
-    #         conv_feats, _ = cnn(img.data)  # Bx2048x7x7
-    #         conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
-    #                                      -1).permute(0, 2, 1).contiguous()
+        if args.enable_butd:
+            conv_feats = img.data  # Bx100x2048
+            vis_pe = vis_pe.data
+        else:
+            conv_feats, _ = cnn(img.data)  # Bx2048x7x7
+            conv_feats = conv_feats.view(conv_feats.size(0), conv_feats.size(1),
+                                         -1).permute(0, 2, 1).contiguous()
 
-    #     traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
-    #                    position_ids, input_mask, task_idx=task_idx)
-    #     if args.beam_size > 1:
-    #         traces = {k: v.tolist() for k, v in traces.items()}
-    #         output_ids = traces['pred_seq']
-    #     else:
-    #         output_ids = traces[0].tolist()
-    #     # for i in range(len(buf)):
-    #     w_ids = output_ids[0]
-    #     output_buf = tokenizer.convert_ids_to_tokens(w_ids)
-    #     output_tokens = []
-    #     for t in output_buf:
-    #         if t in ("[SEP]", "[PAD]"):
-    #             break
-    #         output_tokens.append(t)
-    #     output_sequence = post_process(' '.join(detokenize(output_tokens)))
+        traces = model(conv_feats, vis_pe, input_ids, token_type_ids,
+                       position_ids, input_mask, task_idx=task_idx)
+        if args.beam_size > 1:
+            traces = {k: v.tolist() for k, v in traces.items()}
+            output_ids = traces['pred_seq']
+        else:
+            output_ids = traces[0].tolist()
+        # for i in range(len(buf)):
+        w_ids = output_ids[0]
+        output_buf = tokenizer.convert_ids_to_tokens(w_ids)
+        output_tokens = []
+        for t in output_buf:
+            if t in ("[SEP]", "[PAD]"):
+                break
+            output_tokens.append(t)
+        output_sequence = post_process(' '.join(detokenize(output_tokens)))
 
     return {
         'code': '1000',
         'status': 'Done',
         'data': {
-            'caption': 'output_sequence'
+            'caption': output_sequence
         }
     }
