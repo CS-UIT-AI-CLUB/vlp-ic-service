@@ -108,28 +108,27 @@ class serviceDetectronVLPHandler(Resource):
 
 		try:
 			# image_filename = args['image'].filename
+			# if allowed_file(image_filename):
+			# image_file = args['image'].read()
+			image_file = request.files['image'].read()
+			npimg = np.fromstring(image_file, np.uint8)
+			img = cv2.imdecode(npimg, cv2.IMREAD_UNCHANGED)
+			cv2.imwrite(os.path.join(basedir, app.config['UPLOAD_FOLDER'], image_filename), img)
 
-			return request, 200
-			if allowed_file(image_filename):
-				image_file = args['image'].read()
-				npimg = np.fromstring(image_file, np.uint8)
-				img = cv2.imdecode(npimg, cv2.IMREAD_UNCHANGED)
-				cv2.imwrite(os.path.join(basedir, app.config['UPLOAD_FOLDER'], image_filename), img)
+			result = get_detections_from_im(cfg, model, img, image_filename, '', FEATURE_NAME,
+											MIN_BBOXES, MAX_BBOXES)
 
-				result = get_detections_from_im(cfg, model, img, image_filename, '', FEATURE_NAME,
-												MIN_BBOXES, MAX_BBOXES)
+			# store results
+			proposals = np.concatenate((result['boxes'], np.expand_dims(result['object'], axis=1)
+										.astype(np.float32), np.expand_dims(result['obj_prob'], axis=1)), axis=1)
+			results_dict = {}
+			results_dict['proposals'] = proposals.astype(DATA_TYPE)
+			results_dict['region_feat'] = result['region_feat'].squeeze().astype(DATA_TYPE)
+			results_dict['cls_prob'] = result['cls_prob'].astype(DATA_TYPE)
 
-				# store results
-				proposals = np.concatenate((result['boxes'], np.expand_dims(result['object'], axis=1)
-											.astype(np.float32), np.expand_dims(result['obj_prob'], axis=1)), axis=1)
-				results_dict = {}
-				results_dict['proposals'] = proposals.astype(DATA_TYPE)
-				results_dict['region_feat'] = result['region_feat'].squeeze().astype(DATA_TYPE)
-				results_dict['cls_prob'] = result['cls_prob'].astype(DATA_TYPE)
-
-				return {'message': 'Successfully', 'result': json.dumps(results_dict, cls=NumpyEncoder)}, 200
-			else:
-				return {'message': 'Not in allowed file'}, 420
+			return {'message': 'Successfully', 'result': json.dumps(results_dict, cls=NumpyEncoder)}, 200
+			# else:
+			# 	return {'message': 'Not in allowed file'}, 420
 		except:
 			return {'message': 'No file selected'}, 419
 		
