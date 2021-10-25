@@ -158,7 +158,7 @@ def predict(file: UploadFile = File(...)):
         }
 
     region_feat_vec = np.array(result['result']['region_feat'])
-    region_cls_vec = np.array(result['result']['region_cls'])
+    region_cls_vec = np.array(result['result']['cls_prob'])
     region_bbox_vec = np.array(result['result']['proposals'])
     print(region_feat_vec.shape)
     print(region_cls_vec.shape)
