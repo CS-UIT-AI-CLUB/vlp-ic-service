@@ -121,9 +121,9 @@ class serviceDetectronVLPHandler(Resource):
 				proposals = np.concatenate((result['boxes'], np.expand_dims(result['object'], axis=1)
 											.astype(np.float32), np.expand_dims(result['obj_prob'], axis=1)), axis=1)
 				results_dict = {}
-				results_dict['proposals'] = proposals.astype(DATA_TYPE)
-				results_dict['region_feat'] = result['region_feat'].squeeze().astype(DATA_TYPE)
-				results_dict['cls_prob'] = result['cls_prob'].astype(DATA_TYPE)
+				results_dict['proposals'] = proposals.astype(DATA_TYPE).tolist()
+				results_dict['region_feat'] = result['region_feat'].squeeze().astype(DATA_TYPE).tolist()
+				results_dict['cls_prob'] = result['cls_prob'].astype(DATA_TYPE).tolist()
 
 				return {'message': 'Successfully', 'result': results_dict}, 200
 			else:
