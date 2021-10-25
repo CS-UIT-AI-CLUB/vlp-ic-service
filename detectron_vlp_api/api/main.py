@@ -51,6 +51,7 @@ csv.field_size_limit(sys.maxsize)
 
 from app import api, app, basedir
 from flask_restful import Resource, reqparse
+from flask import request
 import werkzeug
 
 import os
@@ -104,7 +105,8 @@ class serviceDetectronVLPHandler(Resource):
 		parser.add_argument('image', type=werkzeug.datastructures.FileStorage, location='files') 
 
 		args = parser.parse_args()
-		return str(args['image']), 200
+		# return str(args['image']), 200
+		return request.form['image'], 200
 
 		try:
 			image_filename = args['image'].filename
