@@ -125,7 +125,7 @@ class serviceDetectronVLPHandler(Resource):
 					result['region_feat'].squeeze().astype(DATA_TYPE))
 				results_dict['cls_prob'] = str(result['cls_prob'].astype(DATA_TYPE))
 
-				return {'message': 'Successfully', 'result': json.dumps(results_dict)}, 200
+				return {'message': 'Successfully', 'result': results_dict}, 200
 			else:
 				return {'message': 'Not in allowed file'}, 420
 		except:
