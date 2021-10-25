@@ -91,7 +91,6 @@ if args.forbid_ignore_word:
     forbid_ignore_set = set(tokenizer.convert_tokens_to_ids(w_list))
 
 print('Load model...')
-print(glob.glob(args.model_recover_path.strip()))
 for model_recover_path in glob.glob(args.model_recover_path.strip()):
     model_recover = torch.load(model_recover_path)
     model = BertForSeq2SeqDecoder.from_pretrained(args.bert_model,

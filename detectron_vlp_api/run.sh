@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=1 python3 api/main.py
+python3 api/main.py
