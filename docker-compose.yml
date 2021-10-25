@@ -11,11 +11,11 @@ services:
     networks:
       - vlp_service
     deploy:
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
       resources:
         reservations:
           devices:
@@ -33,11 +33,10 @@ services:
     networks:
       - vlp_service
     deploy:
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
+        delay: 10s
+        max_attempts: 3
       resources:
         reservations:
           devices:
