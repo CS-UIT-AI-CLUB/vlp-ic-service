@@ -130,8 +130,8 @@ class serviceDetectronVLPHandler(Resource):
 			else:
 				return {'message': 'Not in allowed file'}, 420
 		except:
-			logger.info(traceback.format_exc())
-			return {'message': 'No file selected'}, 419
+			return {'message': 'Error'}, 500
+			# return {'message': 'No file selected'}, 419
 		
 
 api.add_resource(serviceDetectronVLPHandler, '/api/detectron_vlp')
