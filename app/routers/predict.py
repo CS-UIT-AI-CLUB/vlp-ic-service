@@ -135,6 +135,7 @@ def predict(file: UploadFile = File(...)):
     # region_cls_vec = np.array(f_cls[img_id])
     # region_bbox_vec = np.array(f_bbox[img_id])
 
+    print(file.filename)
     f = {'image': file.file.read()}
     result = requests.post(
         'http://detectron-vlp-api:5055/api/detectron_vlp',
