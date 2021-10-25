@@ -1,8 +1,9 @@
 version: '3.9'
 services:
   detectron-vlp-api:
-    build:
-      context: ./detectron_vlp_api
+    # build:
+    #   context: ./detectron_vlp_api
+    image: khiemledev/detectron_vlp_api
     volumes:
       - ./detectron_vlp_api:/workingspace
     networks:
