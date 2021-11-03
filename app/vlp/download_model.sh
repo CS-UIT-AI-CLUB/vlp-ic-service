@@ -1,6 +1,6 @@
 WORK_DIR=/usr/src
 CHECKPOINTS=${WORK_DIR}/app/vlp/checkpoints
-BERT=${WORK_DIR}/app/vlp/bert
+BERT=${WORK_DIR}/app/vlp
 
 # Download BERT base multilingual cased model
 mkdir -p $BERT
