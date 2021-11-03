@@ -31,7 +31,6 @@ services:
       - /usr/src/app/vlp/checkpoints
       - /usr/src/app/vlp/bert
       - ./app:/usr/src/app
-      - /mlcv:/mlcv
     networks:
       - vlp_service
     deploy:
