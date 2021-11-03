@@ -36,5 +36,7 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 # Set lib path 
 ENV PYTHONPATH "${PYTHONPATH}:/workingspace/lib"
 
+RUN cd /workingspace/ && download_weights.sh
+
 EXPOSE 5055
 CMD ["bash", "run.sh"]
