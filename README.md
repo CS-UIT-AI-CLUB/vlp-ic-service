@@ -1,5 +1,7 @@
 # Image captioning service for healthcare domains in Vietnamese using VLP
 
+This service is a web service that provides image captioning services for healthcare domains in Vietnamese using VLP. The VLP model is trained on the VLSP vietCap4h 2021 Image Captioning for healthcare domains in Vietnamese. The demo service is currently using our best model performed in the competition. You can checkout our completely [demo here](https://aiclub.uit.edu.vn/demo/image_captioning)
+
 ## Quick start
 
 Clone this repo:
