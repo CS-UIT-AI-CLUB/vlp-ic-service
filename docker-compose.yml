@@ -4,8 +4,8 @@ services:
     build:
       context: ./detectron_vlp_api
     # image: khiemledev/detectron_vlp_api
-    volumes:
-      - ./detectron_vlp_api/:/workingspace/
+    # volumes:
+    #   - ./detectron_vlp_api/:/workingspace/
     ports:
       - 8083:5055
     networks:
