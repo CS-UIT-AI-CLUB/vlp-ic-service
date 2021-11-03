@@ -44,3 +44,4 @@ torchvision==0.3.0
 tqdm==4.36.1
 urllib3==1.25.5
 xdg==4.0.1
+gdown

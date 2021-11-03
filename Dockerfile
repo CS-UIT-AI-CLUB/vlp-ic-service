@@ -25,7 +25,8 @@ COPY ./ ${WORK_DIR}
 RUN pip3 install fastapi uvicorn[standard] python-multipart
 RUN pip3 install -r requirements.txt
 
-RUN bash ${WORK_DIR}/app/vlp/setup.sh;
+RUN bash ${WORK_DIR}/app/vlp/setup.sh
+RUN bash ${WORK_DIR}/app/vlp/download_model.sh
 ENV PYTHONPATH=${WORK_DIR}/app/vlp:/${WORK_DIR}/app/vlp/pythia:${WORK_DIR}/app/vlp/pythia/pythia/legacy:${WORK_DIR}/apex
 
 EXPOSE 80
