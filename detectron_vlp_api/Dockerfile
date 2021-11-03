@@ -29,14 +29,14 @@ RUN pip3 install -r requirements.txt
 # Make file  
 RUN cd detectron && make
 
-# Copy detectron-vlp folder
-COPY . /workingspace/
-
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 wget -y
 # Set lib path 
 ENV PYTHONPATH "${PYTHONPATH}:/workingspace/lib"
 
-RUN cd /workingspace/ && download_weights.sh
+# Copy detectron-vlp folder
+COPY . /workingspace/
+RUN pwd && ls -al
+RUN bash ./download_weights.sh
 
 EXPOSE 5055
 CMD ["bash", "run.sh"]
