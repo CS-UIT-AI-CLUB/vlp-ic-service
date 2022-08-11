@@ -22,6 +22,7 @@ WORKDIR ${WORK_DIR}
 
 COPY ./ ${WORK_DIR}
 
+RUN pip3 install --upgrade pip
 RUN pip3 install fastapi uvicorn[standard] python-multipart
 RUN pip3 install -r requirements.txt
 
